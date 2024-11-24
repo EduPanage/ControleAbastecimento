@@ -64,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (await auth.isUserLoggedIn()) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => MyApp()),
+        MaterialPageRoute(builder: (context) => HomeScreen()),
       );
     }
   }

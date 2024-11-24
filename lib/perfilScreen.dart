@@ -47,6 +47,28 @@ class _PerfilScreenState extends State<PerfilScreen> {
       }
     }
   }
+  @override
+  void initState() {
+    super.initState();
+    _carregarDadosPerfil();
+  }
+
+  Future<void> _carregarDadosPerfil() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      DocumentSnapshot doc = await _firestore.collection('usuarios').doc(user.uid).get();
+      if (doc.exists) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        setState(() {
+          _nomeController.text = data['nome'] ?? '';
+          _enderecoController.text = data['endereco'] ?? '';
+          _idadeController.text = data['idade'] ?? '';
+          _cidadeController.text = data['cidade'] ?? '';
+          _paisController.text = data['pais'] ?? '';
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
