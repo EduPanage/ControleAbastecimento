@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:projeto/autenticacaoFirebase.dart';
+import 'package:projeto/homeScreen.dart';
 
 class PerfilScreen extends StatefulWidget {
   @override
@@ -10,105 +10,95 @@ class PerfilScreen extends StatefulWidget {
 
 class _PerfilScreenState extends State<PerfilScreen> {
   final TextEditingController _nomeController = TextEditingController();
-  final TextEditingController _telefoneController = TextEditingController();
   final TextEditingController _enderecoController = TextEditingController();
+  final TextEditingController _idadeController = TextEditingController();
+  final TextEditingController _cidadeController = TextEditingController();
+  final TextEditingController _paisController = TextEditingController();
 
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  late User _user;
-  bool _isLoading = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _user = _auth.currentUser!;
-    _loadUserData();
-  }
+  // Função para atualizar os dados do perfil no Firestore
+  Future<void> _atualizarPerfil() async {
+    User? user = _auth.currentUser;
 
-  // Carrega os dados do usuário do Firestore
-  void _loadUserData() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('usuarios').doc(_user.uid).get();
-
-      if (userDoc.exists) {
-        _nomeController.text = userDoc['nome'];
-        _telefoneController.text = userDoc['telefone'];
-        _enderecoController.text = userDoc['endereco'];
-      } else {
-        // Se o documento não existir, pode criar com dados padrões ou alertar o usuário
-        print("Usuário não encontrado no Firestore");
-      }
-    } catch (e) {
-      print("Erro ao carregar dados do usuário: $e");
-    }
-
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
-
-  // Atualiza os dados do usuário no Firestore
-  void _updateUserData() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      // Acessa a coleção 'usuarios' e atualiza os dados do documento do usuário pelo uid
-      await FirebaseFirestore.instance.collection('usuarios').doc(_user.uid).update({
+    if (user != null) {
+      // Criação dos dados do perfil
+      Map<String, dynamic> dadosPerfil = {
         'nome': _nomeController.text,
-        'telefone': _telefoneController.text,
         'endereco': _enderecoController.text,
-      });
+        'idade': _idadeController.text,
+        'cidade': _cidadeController.text,
+        'pais': _paisController.text,
+      };
 
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Dados atualizados com sucesso")));
-    } catch (e) {
-      print("Erro ao atualizar dados: $e");
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Erro ao atualizar dados")));
+      // Atualizando os dados na coleção "usuarios"
+      try {
+        await _firestore.collection('usuarios').doc(user.uid)
+            .update(dadosPerfil);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Perfil atualizado com sucesso!')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao atualizar perfil: $e')),
+        );
+      }
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Perfil'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            // Navega de volta para a HomeScreen
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
+          },
+        ),
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Padding(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
+          children: [
+            // Campo Nome
             TextField(
               controller: _nomeController,
               decoration: InputDecoration(labelText: 'Nome'),
             ),
-            SizedBox(height: 16),
+            // Campo Cidade
             TextField(
-              controller: _telefoneController,
-              decoration: InputDecoration(labelText: 'Telefone'),
-              keyboardType: TextInputType.phone,
+              controller: _cidadeController,
+              decoration: InputDecoration(labelText: 'Cidade'),
             ),
-            SizedBox(height: 16),
+            // Campo País
+            TextField(
+              controller: _paisController,
+              decoration: InputDecoration(labelText: 'País'),
+            ),
+            // Campo Endereço
             TextField(
               controller: _enderecoController,
               decoration: InputDecoration(labelText: 'Endereço'),
             ),
-            SizedBox(height: 24),
+            // Campo Idade
+            TextField(
+              controller: _idadeController,
+              decoration: InputDecoration(labelText: 'Idade'),
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _updateUserData,
-              child: Text('Atualizar Dados'),
+              onPressed: _atualizarPerfil,
+              child: Text('Atualizar Perfil'),
             ),
           ],
         ),

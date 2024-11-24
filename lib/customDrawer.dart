@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:projeto/homeScreen.dart';
 import 'package:projeto/login.dart';
+import 'package:projeto/meusVeiculosScreen.dart';
 import 'package:projeto/perfilScreen.dart';
+import 'package:projeto/adicionarVeiculosScreen.dart';
 import 'package:projeto/autenticacaoFirebase.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -36,23 +39,33 @@ class CustomDrawer extends StatelessWidget {
             leading: Icon(Icons.home),
             title: Text('Home'),
             onTap: () {
-              // Navegação para Home, se necessário
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => HomeScreen()),
+              );
             },
           ),
           ListTile(
             leading: Icon(Icons.directions_car),
             title: Text('Meus Veículos'),
             onTap: () {
-              // Navegação para Meus Veículos, se necessário
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => MeusVeiculosScreen()),
+              );
             },
           ),
           ListTile(
             leading: Icon(Icons.add),
             title: Text('Adicionar Veículo'),
             onTap: () {
-              // Navegação para Adicionar Veículo, se necessário
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => AdicionarVeiculoScreen()),
+              );
             },
           ),
+
           ListTile(
             leading: Icon(Icons.history),
             title: Text('Histórico de Abastecimentos'),
