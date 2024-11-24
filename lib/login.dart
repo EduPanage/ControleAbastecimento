@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/autenticacaoFirebase.dart';
-import 'package:projeto/homeScrean.dart';
+import 'package:projeto/homeScreen.dart';
 
 class Login extends StatelessWidget {
   @override
