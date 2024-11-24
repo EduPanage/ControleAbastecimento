@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/login.dart';
+import 'package:projeto/perfilScreen.dart';
 import 'package:projeto/autenticacaoFirebase.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -63,7 +64,10 @@ class CustomDrawer extends StatelessWidget {
             leading: Icon(Icons.person),
             title: Text('Perfil'),
             onTap: () {
-              // Navegação para Perfil, se necessário
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PerfilScreen()),
+              );
             },
           ),
           ListTile(

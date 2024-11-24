@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';  // Importando o Firestore
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class AutenticacaoFirebase {
+  // Função de login usando Firebase Authentication
   Future<String> signInWithEmailPassword(String email, String password) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
@@ -18,6 +20,7 @@ class AutenticacaoFirebase {
     }
   }
 
+  // Função de autenticação via API (se você tiver uma API externa)
   Future<String> signIn(String email, String password) async {
     final response = await http.post(
       Uri.parse('https://sua-api.com/login'),
@@ -35,10 +38,19 @@ class AutenticacaoFirebase {
     }
   }
 
+  // Função de registro com Firebase Authentication e Firestore
   Future<String> registerWithEmailPassword(String email, String password) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
+
+      // Cria o documento no Firestore para o novo usuário
+      await FirebaseFirestore.instance.collection('usuarios').doc(userCredential.user!.uid).set({
+        'nome': '',  // Nome vazio, pode ser preenchido depois
+        'telefone': '',  // Telefone vazio
+        'endereco': '',  // Endereço vazio
+      });
+
       return "Usuário registrado com sucesso: ${userCredential.user!.uid}";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -52,12 +64,13 @@ class AutenticacaoFirebase {
     }
   }
 
+  // Função para verificar se o usuário está logado
   Future<bool> isUserLoggedIn() async {
     User? user = FirebaseAuth.instance.currentUser;
     return user != null; // Retorna true se o usuário estiver logado, caso contrário, false
   }
 
-  // Método de logout
+  // Função de logout
   Future<void> logout() async {
     try {
       await FirebaseAuth.instance.signOut(); // Faz o logout do Firebase
