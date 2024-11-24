@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "166792133376",
+    "project_id": "controleabastecimento-69576",
+    "storage_bucket": "controleabastecimento-69576.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:166792133376:android:cd8f812ef3477154b1d1e5",
+        "android_client_info": {
+          "package_name": "br.unigran"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBinJZ6v0VW-59A65stNnXwnwmTsFydZ1s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
