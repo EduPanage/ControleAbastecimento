@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:projeto/homeScreen.dart';
-//import 'package:projeto/perfilScreen.dart';
-//import 'package:projeto/meusVeiculosScreen.dart';
-//import 'package:projeto/historicoScreen.dart';
-//import 'package:projeto/adicionarVeiculoScreen.dart';
-import 'package:projeto/autenticacaoFirebase.dart';
 import 'package:projeto/login.dart';
+import 'package:projeto/autenticacaoFirebase.dart';
 
 class CustomDrawer extends StatelessWidget {
   final String nomeUsuario;
@@ -16,11 +11,11 @@ class CustomDrawer extends StatelessWidget {
   final AutenticacaoFirebase auth = AutenticacaoFirebase();
 
   void _logout(BuildContext context) async {
-    //await auth.logout();
+    await auth.logout(); // Chama o logout da sua classe personalizada
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => Login()),
-          (route) => false,
+      MaterialPageRoute(builder: (context) => Login()), // Redireciona para a tela de login
+          (route) => false, // Remove todas as rotas anteriores
     );
   }
 
@@ -40,50 +35,35 @@ class CustomDrawer extends StatelessWidget {
             leading: Icon(Icons.home),
             title: Text('Home'),
             onTap: () {
-              /*Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => MyHomePage()),
-              );*/
+              // Navegação para Home, se necessário
             },
           ),
           ListTile(
             leading: Icon(Icons.directions_car),
             title: Text('Meus Veículos'),
             onTap: () {
-              /*Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => MeusVeiculosScreen()),
-              );*/
+              // Navegação para Meus Veículos, se necessário
             },
           ),
           ListTile(
             leading: Icon(Icons.add),
             title: Text('Adicionar Veículo'),
             onTap: () {
-              /*Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => AdicionarVeiculoScreen()),
-              );*/
+              // Navegação para Adicionar Veículo, se necessário
             },
           ),
           ListTile(
             leading: Icon(Icons.history),
             title: Text('Histórico de Abastecimentos'),
             onTap: () {
-              /*Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => HistoricoScreen()),
-              );*/
+              // Navegação para Histórico de Abastecimentos, se necessário
             },
           ),
           ListTile(
             leading: Icon(Icons.person),
             title: Text('Perfil'),
             onTap: () {
-              /*Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => PerfilScreen()),
-              );*/
+              // Navegação para Perfil, se necessário
             },
           ),
           ListTile(

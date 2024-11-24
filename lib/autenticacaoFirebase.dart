@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -19,7 +18,6 @@ class AutenticacaoFirebase {
     }
   }
 
-
   Future<String> signIn(String email, String password) async {
     final response = await http.post(
       Uri.parse('https://sua-api.com/login'),
@@ -37,8 +35,7 @@ class AutenticacaoFirebase {
     }
   }
 
-  Future<String> registerWithEmailPassword(
-      String email, String password) async {
+  Future<String> registerWithEmailPassword(String email, String password) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -55,10 +52,17 @@ class AutenticacaoFirebase {
     }
   }
 
-
   Future<bool> isUserLoggedIn() async {
     User? user = FirebaseAuth.instance.currentUser;
-    return user !=
-        null; // Retorna true se o usuário estiver logado, caso contrário, false
+    return user != null; // Retorna true se o usuário estiver logado, caso contrário, false
+  }
+
+  // Método de logout
+  Future<void> logout() async {
+    try {
+      await FirebaseAuth.instance.signOut(); // Faz o logout do Firebase
+    } catch (e) {
+      print("Erro ao realizar logout: $e");
+    }
   }
 }
