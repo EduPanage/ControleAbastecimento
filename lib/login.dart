@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:projeto/autenticacaoFirebase.dart';
-import 'package:projeto/homeScreen.dart';
+import 'package:projeto/firebase/autenticacaoFirebase.dart';
+import 'package:projeto/screens/homeScreen.dart';
 
 class Login extends StatelessWidget {
   @override
@@ -25,20 +25,19 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final AutenticacaoFirebase auth = AutenticacaoFirebase();
 
-  @override
-  void initState() {
-    super.initState();
-    _validaLogin();
-  }
-
   void _login() async {
-    final email = _emailController.text;
-    final password = _passwordController.text;
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
 
-    // Chama o método de login e recebe a mensagem de resultado
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Por favor, preencha todos os campos!')),
+      );
+      return;
+    }
+
     String message = await auth.signInWithEmailPassword(email, password);
 
-    // Exibe um Snackbar com a mensagem de resultado
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
@@ -46,19 +45,23 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _register() async {
-    final email = _emailController.text;
-    final password = _passwordController.text;
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
 
-    // Chama o método de registro e recebe a mensagem de resultado
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Por favor, preencha todos os campos!')),
+      );
+      return;
+    }
+
     String message = await auth.registerWithEmailPassword(email, password);
 
-    // Exibe um Snackbar com a mensagem de resultado
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
     _validaLogin();
   }
-
 
   void _validaLogin() async {
     if (await auth.isUserLoggedIn()) {
@@ -85,6 +88,8 @@ class _LoginScreenState extends State<LoginScreen> {
               decoration: InputDecoration(
                 labelText: 'Email',
                 border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.email),
+                labelStyle: TextStyle(fontSize: 14),
               ),
               keyboardType: TextInputType.emailAddress,
             ),
@@ -94,6 +99,8 @@ class _LoginScreenState extends State<LoginScreen> {
               decoration: InputDecoration(
                 labelText: 'Senha',
                 border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.lock),
+                labelStyle: TextStyle(fontSize: 14),
               ),
               obscureText: true,
             ),
@@ -108,6 +115,21 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Text('Registrar'),
             ),
             SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Não tem uma conta? "),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
+                  },
+                  child: Text("Registrar-se"),
+                ),
+              ],
+            ),
           ],
         ),
       ),

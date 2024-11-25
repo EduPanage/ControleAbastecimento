@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:projeto/homeScreen.dart';
+import 'package:projeto/screens/homeScreen.dart';
 
 class MeusVeiculosScreen extends StatefulWidget {
   @override

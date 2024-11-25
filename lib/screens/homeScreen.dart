@@ -1,22 +1,8 @@
-// homeScreen.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:projeto/customDrawer.dart';
-import 'package:projeto/adicionarVeiculosScreen.dart';
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: HomeScreen(),
-      routes: {
-        '/adicionar-veiculo': (context) => AdicionarVeiculoScreen(),
-      },
-    );
-  }
-}
+import 'package:projeto/screens/adicionarVeiculosScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -24,25 +10,24 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String nomeUsuario = "";
-  String emailUsuario = "";
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  @override
-  void initState() {
-    super.initState();
-    _getUserData();
-  }
+  Stream<Map<String, dynamic>> _getUserData() {
+    return _auth.authStateChanges().asyncMap((User? user) async {
+      if (user != null) {
+        DocumentSnapshot userDoc = await _firestore
+            .collection('usuarios')
+            .doc(user.uid)
+            .get();
 
-  void _getUserData() {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      setState(() {
-        nomeUsuario = user.displayName ?? "Usuário Sem Nome";
-        emailUsuario = user.email ?? "email não disponível";
-      });
-    }
+        return {
+          'user': user,
+          'userData': userDoc.data() as Map<String, dynamic>?,
+        };
+      }
+      return {};
+    });
   }
 
   Stream<QuerySnapshot> _getVeiculosStream() {
@@ -64,9 +49,30 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("Home"),
       ),
-      drawer: CustomDrawer(
-        nomeUsuario: nomeUsuario,
-        emailUsuario: emailUsuario,
+      drawer: StreamBuilder<Map<String, dynamic>>(
+        stream: _getUserData(),
+        builder: (context, userSnapshot) {
+          if (userSnapshot.connectionState == ConnectionState.waiting) {
+            return Drawer(child: Center(child: CircularProgressIndicator()));
+          }
+
+          if (!userSnapshot.hasData || userSnapshot.data!.isEmpty) {
+            return Drawer(child: Center(child: Text('Usuário não autenticado')));
+          }
+
+          User user = userSnapshot.data!['user'] as User;
+          Map<String, dynamic>? userData = userSnapshot.data!['userData'];
+
+          String nomeUsuario = userData?['nome']?.toString().isNotEmpty == true
+              ? userData!['nome']
+              : "Usuário Sem Nome";
+          String emailUsuario = user.email ?? "email não disponível";
+
+          return CustomDrawer(
+            nomeUsuario: nomeUsuario,
+            emailUsuario: emailUsuario,
+          );
+        },
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _getVeiculosStream(),
@@ -120,9 +126,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       Text('Cor: ${veiculo['cor']}'),
                     ],
                   ),
-                  onTap: () {
-                    // Implementar navegação para detalhes do veículo
-                  },
                 ),
               );
             },

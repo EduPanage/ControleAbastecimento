@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:projeto/HistoricoAbastecimentoScreen.dart';
-import 'package:projeto/homeScreen.dart';
+import 'package:projeto/screens/HistoricoAbastecimentoScreen.dart';
+import 'package:projeto/screens/homeScreen.dart';
 import 'package:projeto/login.dart';
-import 'package:projeto/meusVeiculosScreen.dart';
-import 'package:projeto/perfilScreen.dart';
-import 'package:projeto/adicionarVeiculosScreen.dart';
-import 'package:projeto/autenticacaoFirebase.dart';
+import 'package:projeto/screens/meusVeiculosScreen.dart';
+import 'package:projeto/screens/perfilScreen.dart';
+import 'package:projeto/screens/adicionarVeiculosScreen.dart';
+import 'package:projeto/firebase/autenticacaoFirebase.dart';
 
 class CustomDrawer extends StatelessWidget {
   final String nomeUsuario;
@@ -16,11 +16,11 @@ class CustomDrawer extends StatelessWidget {
   final AutenticacaoFirebase auth = AutenticacaoFirebase();
 
   void _logout(BuildContext context) async {
-    await auth.logout(); // Chama o logout da sua classe personalizada
+    await auth.logout();
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => Login()), // Redireciona para a tela de login
-          (route) => false, // Remove todas as rotas anteriores
+      MaterialPageRoute(builder: (context) => Login()),
+          (route) => false,
     );
   }
 
